@@ -2908,5 +2908,38 @@
       });
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c7178b820e282d',t:'MTc2Mjc5Mzg3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c7178b820e282d',t:'MTc2Mjc5Mzg3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+ const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwh1m1YaLx9vDYFn_gOwMt9wWQylXAztfY1vnpuzdNJo4UIWFA6iXkpSO0QWy8DfJlJ_g/exec";
+
+function handleOrderForm(event) {
+  event.preventDefault();
+
+  const formData = {
+    fullName: document.getElementById("fullName").value,
+    phone: document.getElementById("phone").value,
+    email: document.getElementById("email").value,
+    projectName: document.getElementById("projectName").value,
+    helpDate: document.getElementById("helpDate").value,
+    paymentMethod: document.getElementById("paymentMethod").value,
+    serviceDetails: document.getElementById("serviceDetails").value,
+    budget: document.getElementById("budget").value,
+    serviceType: selectedService, // تأكد أن selectedService معرف في كودك
+    files: ""  // لو لديك رفع ملفات وتريد تضمين الرابط، ضيف هنا
+  };
+
+  fetch(GOOGLE_SHEET_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData)
+  })
+    .then(() => {
+      alert("تم إرسال الطلب بنجاح!");
+      // ممكن هنا إعادة تعيين الاستمارة: event.target.reset();
+    })
+    .catch(() => {
+      alert("حدث خطأ، يرجى المحاولة لاحقاً.");
+    });
+}
+</body>
 </html>
