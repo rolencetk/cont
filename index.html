@@ -2914,75 +2914,66 @@
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
   
  <script>
-/* --------------------
-   إعداد المتغيرات
---------------------- */
+document.querySelector(".order-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-// لتخزين الملفات بعد تحويلها Base64
-let uploadedFilesArray = [];
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxg39ZCfs5QmnJDPM2Sl1Ks4zIZxunC2blamLX7jPIC_FjruBPfpl24LSCySy5hB1L5BA/exec"; // ضعي رابطك هنا
 
-// تحويل الملفات إلى Base64
-function convertFiles(files) {
-  uploadedFilesArray = []; // نفرّغ الآري
+    const form = e.target;
 
-  [...files].forEach(file => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      uploadedFilesArray.push({
-        name: file.name,
-        type: file.type,
-        base64: reader.result.split(",")[1]
-      });
+    // نجمع البيانات
+    const data = {
+        serviceType: document.querySelector("#form-title").innerText.includes("المحاسبة") ? "accounting" : "financial",
+        fullName: form.fullName.value,
+        phone: form.phone.value,
+        email: form.email.value,
+        projectName: form.projectName.value,
+        helpDate: form.helpDate.value,
+        paymentMethod: form.paymentMethod.value,
+        serviceDetails: form.serviceDetails.value,
+        budget: form.budget.value,
+        files: []
     };
-    reader.readAsDataURL(file);
-  });
-}
 
-// التقط رفع الملفات
-document.getElementById("file-input").addEventListener("change", (e) => {
-  convertFiles(e.target.files);
-});
+    // تجميع الملفات وتحويلها Base64
+    const fileInput = document.getElementById("file-input");
+    const files = fileInput.files;
 
+    for (let file of files) {
+        const base64 = await toBase64(file);
+        data.files.push({
+            name: file.name,
+            type: file.type,
+            base64: base64.replace(/^data:.*;base64,/, "")
+        });
+    }
 
-/* --------------------
-   إرسال الاستمارة
---------------------- */
-
-function handleOrderForm(event) {
-  event.preventDefault();
-
-  // تجهيز البيانات
-  const formData = {
-    serviceType: window.selectedService || "",
-    fullName: document.getElementById("fullName").value,
-    phone: document.getElementById("phone").value,
-    email: document.getElementById("email").value,
-    projectName: document.getElementById("projectName").value,
-    helpDate: document.getElementById("helpDate").value,
-    paymentMethod: document.getElementById("paymentMethod").value,
-    serviceDetails: document.getElementById("serviceDetails").value,
-    budget: document.getElementById("budget").value,
-    files: uploadedFilesArray
-  };
-
-  // إرسال إلى Google Script
-  fetch("https://script.google.com/macros/s/AKfycbwYyljySo5TejBJWU81CwFprJXGBxnxRYQaM0cdBRKH01hvrCkIlMRTG9dHNXgmFR0T/exec", {
-    method: "POST",
-    body: JSON.stringify(formData),
-    headers: { "Content-Type": "application/json" }
-  })
+    // إرسال البيانات
+    fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+    })
     .then(res => res.json())
-    .then(res => {
-      if (res.status === "success") {
-        alert("✔️ تم إرسال الطلب بنجاح");
-      } else {
-        alert("حدث خطأ: " + res.message);
-      }
+    .then(result => {
+        alert("✔ تم إرسال الطلب بنجاح!");
     })
     .catch(err => {
-      alert("فشل الاتصال: " + err);
+        alert("⚠ فشل الاتصال، تأكدي من السكربت.");
+        console.log(err);
+    });
+});
+
+// تحويل ملف إلى Base64
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
     });
 }
 </script>
+
 </body>
 </html>
