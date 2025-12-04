@@ -2911,5 +2911,79 @@
       });
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+  
+ <script>
+
+// متغير لحفظ نوع الخدمة عند الاختيار
+let selectedService = "";
+
+// يشتغل من الزر داخل الكارت (المحاسبة / المالية)
+function selectService(type) {
+    selectedService = type;
+    // هذا الجزء عندك جاهز في كودك الأصلي وما نغيرو
+}
+
+// مصفوفة لحفظ الملفات بعد تحويلها Base64
+let uploadedFilesArray = [];
+
+// تحويل الملفات إلى Base64
+function convertFiles(files) {
+    uploadedFilesArray = [];
+
+    [...files].forEach(file => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            uploadedFilesArray.push({
+                name: file.name,
+                type: file.type,
+                base64: reader.result.split(",")[1]
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// عند اختيار الملفات
+document.getElementById("file-input").addEventListener("change", (e) => {
+    convertFiles(e.target.files);
+});
+
+// إرسال الاستمارة
+function handleOrderForm(event) {
+    event.preventDefault();
+
+    // جمع البيانات
+    const formData = {
+        serviceType: selectedService,
+        fullName: document.getElementById("fullName").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        projectName: document.getElementById("projectName").value,
+        helpDate: document.getElementById("helpDate").value,
+        paymentMethod: document.getElementById("paymentMethod").value,
+        serviceDetails: document.getElementById("serviceDetails").value,
+        budget: document.getElementById("budget").value,
+        files: uploadedFilesArray
+    };
+
+    // إرسال البيانات للسكربت
+    fetch("https://script.google.com/macros/s/AKfycbxat1YW7yaEB7_4x3jl8sRhIS5ZunndtnB63KAhYa0lXMQjKJYcuTctyZYbBxgzsxJiUw/exec", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("تم إرسال الطلب بنجاح ✓");
+        } else {
+            alert("حدث خطأ أثناء الإرسال");
+        }
+    })
+    .catch(err => alert("خطأ في الاتصال!"));
+}
+
+</script>
+</body>
 </html>
