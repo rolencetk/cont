@@ -58,12 +58,15 @@
       padding: 0 40px;
     }
 
-   .logo-img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  margin-right: 8px;
-}
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #0E4D7C;
+      letter-spacing: -0.025em;
+    }
 
     .logo-icon {
       width: 45px;
@@ -1587,9 +1590,20 @@
  <body><!-- Top Navigation -->
   <nav class="top-nav">
    <div class="logo">
-    <img src="CED82763-B605-4D26-AE8F-021BC095A151.png" class="logo-img" alt="Logo">
-<span id="site-title">شمس المحاسبة</span><span id="site-title">شمس المحاسبة</span>
+    <svg class="logo-icon" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs>
+      <lineargradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+       <stop offset="0%" style="stop-color:#0E4D7C;stop-opacity:1" />
+       <stop offset="50%" style="stop-color:#2473A9;stop-opacity:1" />
+       <stop offset="100%" style="stop-color:#E5CB4C;stop-opacity:1" />
+      </lineargradient>
+      <lineargradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+       <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+       <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:1" />
+      </lineargradient>
+     </defs> <circle cx="50" cy="50" r="45" fill="url(#logoGradient)" opacity="0.1" /> <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="3" /> <path d="M50 15 L62 38 L85 38 L68 52 L74 75 L50 61 L26 75 L32 52 L15 38 L38 38 Z" fill="url(#logoGradient)" /> <circle cx="50" cy="50" r="12" fill="url(#centerGradient)" stroke="url(#logoGradient)" stroke-width="2" /> <circle cx="50" cy="50" r="6" fill="url(#logoGradient)" />
+    </svg><span id="site-title">شمس المحاسبة</span>
    </div>
+   <div class="top-nav-right"><button class="notification-btn"> 🔔 <span class="notification-badge"></span> </button>
     <div class="user-profile" onclick="toggleAuthModal()"><span>👤</span> <span id="user-status">تسجيل الدخول</span>
     </div><button class="menu-toggle" onclick="toggleSidebar()">☰</button>
    </div>
@@ -2908,38 +2922,5 @@
       });
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99c7178b820e282d',t:'MTc2Mjc5Mzg3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
- const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwh1m1YaLx9vDYFn_gOwMt9wWQylXAztfY1vnpuzdNJo4UIWFA6iXkpSO0QWy8DfJlJ_g/exec";
-
-function handleOrderForm(event) {
-  event.preventDefault();
-
-  const formData = {
-    fullName: document.getElementById("fullName").value,
-    phone: document.getElementById("phone").value,
-    email: document.getElementById("email").value,
-    projectName: document.getElementById("projectName").value,
-    helpDate: document.getElementById("helpDate").value,
-    paymentMethod: document.getElementById("paymentMethod").value,
-    serviceDetails: document.getElementById("serviceDetails").value,
-    budget: document.getElementById("budget").value,
-    serviceType: selectedService, // تأكد أن selectedService معرف في كودك
-    files: ""  // لو لديك رفع ملفات وتريد تضمين الرابط، ضيف هنا
-  };
-
-  fetch(GOOGLE_SHEET_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData)
-  })
-    .then(() => {
-      alert("تم إرسال الطلب بنجاح!");
-      // ممكن هنا إعادة تعيين الاستمارة: event.target.reset();
-    })
-    .catch(() => {
-      alert("حدث خطأ، يرجى المحاولة لاحقاً.");
-    });
-}
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
