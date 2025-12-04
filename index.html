@@ -2914,76 +2914,90 @@
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
   
  <script>
-
-// متغير لحفظ نوع الخدمة عند الاختيار
+// ---------------------------------------------
+// 1) متغير نوع الخدمة
+// ---------------------------------------------
 let selectedService = "";
 
-// يشتغل من الزر داخل الكارت (المحاسبة / المالية)
 function selectService(type) {
-    selectedService = type;
-    // هذا الجزء عندك جاهز في كودك الأصلي وما نغيرو
+  selectedService = type;
+  document.getElementById("order-form-container").style.display = "block";
+  document.getElementById("service-selection").style.display = "none";
+
+  document.getElementById("form-title").textContent =
+    type === "accounting" ? "طلب خدمة المحاسبة" : "طلب خدمة المالية";
 }
 
-// مصفوفة لحفظ الملفات بعد تحويلها Base64
+function backToSelection() {
+  document.getElementById("order-form-container").style.display = "none";
+  document.getElementById("service-selection").style.display = "block";
+}
+
+
+
+// ---------------------------------------------
+// 2) تحويل الملفات إلى Base64 وتخزينها
+// ---------------------------------------------
 let uploadedFilesArray = [];
 
-// تحويل الملفات إلى Base64
-function convertFiles(files) {
-    uploadedFilesArray = [];
+document.getElementById("file-input").addEventListener("change", function (e) {
+  uploadedFilesArray = []; // إعادة التصفير
 
-    [...files].forEach(file => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            uploadedFilesArray.push({
-                name: file.name,
-                type: file.type,
-                base64: reader.result.split(",")[1]
-            });
-        };
-        reader.readAsDataURL(file);
-    });
-}
+  const files = e.target.files;
 
-// عند اختيار الملفات
-document.getElementById("file-input").addEventListener("change", (e) => {
-    convertFiles(e.target.files);
+  [...files].forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      uploadedFilesArray.push({
+        name: file.name,
+        type: file.type,
+        base64: reader.result.split(",")[1],
+      });
+    };
+    reader.readAsDataURL(file);
+  });
 });
 
-// إرسال الاستمارة
+
+
+// ---------------------------------------------
+// 3) إرسال الطلب للسكربت
+// ---------------------------------------------
 function handleOrderForm(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    // جمع البيانات
-    const formData = {
-        serviceType: selectedService,
-        fullName: document.getElementById("fullName").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
-        projectName: document.getElementById("projectName").value,
-        helpDate: document.getElementById("helpDate").value,
-        paymentMethod: document.getElementById("paymentMethod").value,
-        serviceDetails: document.getElementById("serviceDetails").value,
-        budget: document.getElementById("budget").value,
-        files: uploadedFilesArray
-    };
+  const formData = {
+    serviceType: selectedService,
+    fullName: document.getElementById("fullName").value,
+    phone: document.getElementById("phone").value,
+    email: document.getElementById("email").value,
+    projectName: document.getElementById("projectName").value,
+    helpDate: document.getElementById("helpDate").value,
+    paymentMethod: document.getElementById("paymentMethod").value,
+    serviceDetails: document.getElementById("serviceDetails").value,
+    budget: document.getElementById("budget").value,
+    files: uploadedFilesArray
+  };
 
-    // إرسال البيانات للسكربت
-    fetch("https://script.google.com/macros/s/AKfycbzQLitpFnkQ3FHsuqXgNO3WvCmDVGBkDopKIeDBalJoow6xYx9DYWLnbLNPu5K-ugbMJg/exec", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status === "success") {
-            alert("تم إرسال الطلب بنجاح ✓");
-        } else {
-            alert("حدث خطأ أثناء الإرسال");
-        }
-    })
-    .catch(err => alert("خطأ في الاتصال!"));
+  fetch("https://script.google.com/macros/s/AKfycbxat1YW7yaEB7_4x3jl8sRhIS5ZunndtnB63KAhYa0lXMQjKJYcuTctyZYbBxgzsxJiUw/exec", {
+    method: "POST",
+    body: JSON.stringify(formData),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      alert("تم إرسال الطلب بنجاح!");
+    } else {
+      alert("حدث خطأ: " + data.message);
+    }
+  })
+  .catch(err => {
+    alert("فشل الاتصال بالسيرفر!");
+    console.log(err);
+  });
 }
-
 </script>
+
 </body>
 </html>
