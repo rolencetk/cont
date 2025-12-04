@@ -2914,36 +2914,16 @@
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8d01e7b24ed07f',t:'MTc2NDg2OTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
   
  <script>
-// ---------------------------------------------
-// 1) متغير نوع الخدمة
-// ---------------------------------------------
-let selectedService = "";
+/* --------------------
+   إعداد المتغيرات
+--------------------- */
 
-function selectService(type) {
-  selectedService = type;
-  document.getElementById("order-form-container").style.display = "block";
-  document.getElementById("service-selection").style.display = "none";
-
-  document.getElementById("form-title").textContent =
-    type === "accounting" ? "طلب خدمة المحاسبة" : "طلب خدمة المالية";
-}
-
-function backToSelection() {
-  document.getElementById("order-form-container").style.display = "none";
-  document.getElementById("service-selection").style.display = "block";
-}
-
-
-
-// ---------------------------------------------
-// 2) تحويل الملفات إلى Base64 وتخزينها
-// ---------------------------------------------
+// لتخزين الملفات بعد تحويلها Base64
 let uploadedFilesArray = [];
 
-document.getElementById("file-input").addEventListener("change", function (e) {
-  uploadedFilesArray = []; // إعادة التصفير
-
-  const files = e.target.files;
+// تحويل الملفات إلى Base64
+function convertFiles(files) {
+  uploadedFilesArray = []; // نفرّغ الآري
 
   [...files].forEach(file => {
     const reader = new FileReader();
@@ -2951,23 +2931,29 @@ document.getElementById("file-input").addEventListener("change", function (e) {
       uploadedFilesArray.push({
         name: file.name,
         type: file.type,
-        base64: reader.result.split(",")[1],
+        base64: reader.result.split(",")[1]
       });
     };
     reader.readAsDataURL(file);
   });
+}
+
+// التقط رفع الملفات
+document.getElementById("file-input").addEventListener("change", (e) => {
+  convertFiles(e.target.files);
 });
 
 
+/* --------------------
+   إرسال الاستمارة
+--------------------- */
 
-// ---------------------------------------------
-// 3) إرسال الطلب للسكربت
-// ---------------------------------------------
 function handleOrderForm(event) {
   event.preventDefault();
 
+  // تجهيز البيانات
   const formData = {
-    serviceType: selectedService,
+    serviceType: window.selectedService || "",
     fullName: document.getElementById("fullName").value,
     phone: document.getElementById("phone").value,
     email: document.getElementById("email").value,
@@ -2979,25 +2965,24 @@ function handleOrderForm(event) {
     files: uploadedFilesArray
   };
 
-  fetch("https://script.google.com/macros/s/AKfycbwwb_4QObEtx7A5eOJiB2oGTnayttucdIKGJBqhQZllvpVkm3o8hGCN-YrpxNcuabtg9A/exec", {
+  // إرسال إلى Google Script
+  fetch("https://script.google.com/macros/s/AKfycbwYyljySo5TejBJWU81CwFprJXGBxnxRYQaM0cdBRKH01hvrCkIlMRTG9dHNXgmFR0T/exec", {
     method: "POST",
     body: JSON.stringify(formData),
     headers: { "Content-Type": "application/json" }
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.status === "success") {
-      alert("تم إرسال الطلب بنجاح!");
-    } else {
-      alert("حدث خطأ: " + data.message);
-    }
-  })
-  .catch(err => {
-    alert("فشل الاتصال بالسيرفر!");
-    console.log(err);
-  });
+    .then(res => res.json())
+    .then(res => {
+      if (res.status === "success") {
+        alert("✔️ تم إرسال الطلب بنجاح");
+      } else {
+        alert("حدث خطأ: " + res.message);
+      }
+    })
+    .catch(err => {
+      alert("فشل الاتصال: " + err);
+    });
 }
 </script>
-
 </body>
 </html>
