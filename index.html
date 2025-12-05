@@ -1918,7 +1918,8 @@
           <svg width="48" height="48" viewbox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
           </svg>
          </div>
-         <div class="upload-text">
+         <form class="order-form" onsubmit="handleOrderForm(event)">
+
           <h4>اسحب الملفات هنا أو انقر للاختيار</h4>
           <p>يمكنك رفع ملفات PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (حد أقصى 10 ملفات - 5MB لكل ملف)</p>
          </div><input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display: none;"> <button type="button" class="upload-btn" onclick="document.getElementById('file-input').click()">
@@ -2960,7 +2961,7 @@ async function handleOrderForm(e) {
         alert("⚠ فشل الاتصال، تأكدي من السكربت.");
         console.error(err);
     });
-});
+}
 
 function toBase64(file) {
     return new Promise((resolve, reject) => {
@@ -2971,6 +2972,7 @@ function toBase64(file) {
     });
 }
 </script>
+
 
 </body>
 </html>
